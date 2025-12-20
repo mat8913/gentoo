@@ -55,6 +55,8 @@ src_prepare() {
 }
 
 multilib_src_compile() {
+	append-cppflags "-D_LARGEFILE64_SOURCE"
+
 	tc-export AR CC PKG_CONFIG RANLIB
 
 	local -x CFLAGS="${CFLAGS} -fno-semantic-interposition"

@@ -42,6 +42,7 @@ src_prepare() {
 		eapply -p0 "${WORKDIR}/0001-full-patch-against-stable-release.patch"
 	fi
 
+	eapply "${FILESDIR}"/${PN}-2.20250618-musl-dns.patch
 	eapply_user
 
 	cd "${S}/refpolicy" || die

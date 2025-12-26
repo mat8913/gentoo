@@ -1,0 +1,14 @@
+https://github.com/SELinuxProject/refpolicy/pull/29
+
+diff --git a/policy/modules/system/sysnetwork.if b/policy/modules/system/sysnetwork.if
+index 2c61611f9..eb5976598 100644
+--- a/refpolicy/policy/modules/system/sysnetwork.if
++++ b/refpolicy/policy/modules/system/sysnetwork.if
+@@ -973,6 +973,7 @@ interface(`sysnet_dns_name_resolve',`
+ 	corenet_udp_sendrecv_generic_node($1)
+ 	corenet_tcp_connect_dns_port($1)
+ 	corenet_sendrecv_dns_client_packets($1)
++	corenet_udp_bind_generic_node($1)
+ 
+ 	sysnet_read_config($1)
+ 

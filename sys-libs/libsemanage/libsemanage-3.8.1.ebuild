@@ -42,6 +42,7 @@ BDEPEND=">=dev-lang/swig-2.0.4-r1
 RESTRICT="test"
 
 src_prepare() {
+	eapply -p2 "${FILESDIR}"/${PN}-3.8.1-fix-build-basename.patch
 	eapply_user
 
 	echo >> "${S}/src/semanage.conf"

@@ -1,0 +1,46 @@
+https://gitlab.com/procps-ng/procps/-/merge_requests/279.patch
+
+From 599d959fcdc7a6c63c217c23464d1f0682360462 Mon Sep 17 00:00:00 2001
+From: Matthew Harm Bekkema <id@mbekkema.name>
+Date: Sun, 14 Dec 2025 23:19:58 +1100
+Subject: [PATCH] ps: fix segfault under selinux without libnuma
+
+Currently, running `ps auxZ` with SELinux enabled without libnuma
+installed throws a segfault at the ps_freecon call. This is because a
+previous dlopen() call failed and the dlerror was not reset since,
+causing the code to think the dlsym call to get freecon failed.
+
+Fix this by resetting dlerror before the first dlsym call. Additionally,
+add a check that ps_freecon is non-null before entering the libselinux
+path.
+---
+ src/ps/output.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/ps/output.c b/src/ps/output.c
+index 8c3a34a7..d4b16553 100644
+--- a/src/ps/output.c
++++ b/src/ps/output.c
+@@ -1489,10 +1489,10 @@ setREL1(ID_TGID)
+   if(!ps_getpidcon && !tried_load){
+     void *handle = dlopen("libselinux.so.1", RTLD_NOW);
+     if(handle){
++      dlerror();
+       ps_freecon = dlsym(handle, "freecon");
+       if(dlerror())
+         ps_freecon = 0;
+-      dlerror();
+       ps_getpidcon = dlsym(handle, "getpidcon");
+       if(dlerror())
+         ps_getpidcon = 0;
+@@ -1505,7 +1505,7 @@ setREL1(ID_TGID)
+     tried_load++;
+   }
+ #endif
+-  if(ps_getpidcon && selinux_enabled && !ps_getpidcon(rSv(ID_TGID, s_int, pp), &context)){
++  if(ps_freecon && ps_getpidcon && selinux_enabled && !ps_getpidcon(rSv(ID_TGID, s_int, pp), &context)){
+     size_t max_len = OUTBUF_SIZE-1;
+     len = strlen(context);
+     if(len > max_len) len = max_len;
+-- 
+GitLab

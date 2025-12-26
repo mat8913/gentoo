@@ -55,6 +55,7 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-4.0.5-top-legacy-config-vuln.patch # bug #958286
 	"${FILESDIR}"/${PN}-4.0.5-macos.patch
 	"${FILESDIR}"/${PN}-4.0.5-pgrep-old-linux-headers.patch # bug #911375
+	"${FILESDIR}"/${PN}-4.0.5-ps-fix-segfault.patch
 )
 
 src_prepare() {
